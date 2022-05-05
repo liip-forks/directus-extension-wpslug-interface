@@ -1,4 +1,5 @@
 import { defineInterface } from '@directus/extensions-sdk';
+import { useStores } from '@directus/extensions-sdk';
 import InterfaceSlug from './slug.vue';
 
 export default defineInterface({
@@ -10,6 +11,15 @@ export default defineInterface({
 	types: ['string'],
 	group: 'standard',
 	options: ({ collection }) => {
+		const store = useStores();
+		const fieldsStore = store.useFieldsStore();
+
+		const choices: { text: string; value: string | null; relations: any }[] = fieldsStore
+			.getFieldsForCollection(collection)
+			.map((field) => {
+				return { text: field.name, value: field.field, relations: field.relations };
+			});
+
 		return [
 			{
 				field: 'placeholder',
@@ -34,6 +44,21 @@ export default defineInterface({
 						collectionName: collection,
 						font: 'monospace',
 						placeholder: '{{ title }}-{{ id }}',
+					},
+				},
+			},
+			{
+				field: 'parent',
+				type: 'string',
+				name: '$t:parent',
+				meta: {
+					width: 'full',
+					interface: 'select-dropdown',
+					required: false,
+					options: {
+						placeholder: '$t:primary_key',
+						showDeselect: true,
+						choices,
 					},
 				},
 			},
