@@ -152,11 +152,12 @@ export default defineComponent({
 		}
 
 		watch(values, (newValues: Record<string, any>, oldValues: Record<string, any>) => {
+			// Remove slugs if parent was removed
+			if (oldValues[props.parent] && !newValues[props.parent]) {
+				parentSlugs.value = [];
+			}
 			// Refresh parent slugs if parent changed
-			if (
-				(oldValues[props.parent] && !newValues[props.parent]) ||
-				(newValues[props.parent] && newValues[props.parent] !== oldValues[props.parent])
-			) {
+			if (newValues[props.parent] && newValues[props.parent] !== oldValues[props.parent]) {
 				// newValues[props.parent] contain the parent id if a new parent was selected or a proxy object when the parent was edited
 				const parentId: number =
 					typeof newValues[props.parent] === 'number' ? newValues[props.parent] : newValues[props.parent].id;
