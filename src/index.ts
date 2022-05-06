@@ -14,7 +14,7 @@ export default defineInterface({
 		const store = useStores();
 		const fieldsStore = store.useFieldsStore();
 
-		const choices: { text: string; value: string | null; relations: any }[] = fieldsStore
+		const fields: { text: string; value: string | null; relations: any }[] = fieldsStore
 			.getFieldsForCollection(collection)
 			.map((field) => {
 				return { text: field.name, value: field.field, relations: field.relations };
@@ -58,7 +58,7 @@ export default defineInterface({
 					options: {
 						placeholder: '$t:primary_key',
 						showDeselect: true,
-						choices,
+						choices: fields,
 					},
 				},
 			},
