@@ -157,11 +157,16 @@ export default defineComponent({
 				(oldValues[props.parent] && !newValues[props.parent]) ||
 				(newValues[props.parent] && newValues[props.parent] !== oldValues[props.parent])
 			) {
-				parentsLoading.value = true;
-				getParentSlugs(newValues[props.parent]).then(function (p) {
-					parentSlugs.value = p;
-					parentsLoading.value = false;
-				});
+				// newValues[props.parent] contain the parent id if a new parent was selected or a proxy object when the parent was edited
+				const parentId: number =
+					typeof newValues[props.parent] === 'number' ? newValues[props.parent] : newValues[props.parent].id;
+				if (parentId) {
+					parentsLoading.value = true;
+					getParentSlugs(parentId).then(function (p) {
+						parentSlugs.value = p;
+						parentsLoading.value = false;
+					});
+				}
 			}
 
 			// Reject when manually edited.
