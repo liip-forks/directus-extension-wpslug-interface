@@ -1,6 +1,24 @@
 import { defineInterface } from '@directus/extensions-sdk';
 import { useStores } from '@directus/extensions-sdk';
 import InterfaceSlug from './slug.vue';
+import { useI18n, LocaleMessageObject, VueMessageType } from 'vue-i18n';
+
+enum AvailableLanguages {
+	'en-GB' = 'en-GB',
+	'de-DE' = 'de-DE',
+}
+const MESSAGES: {
+	[key in AvailableLanguages]: LocaleMessageObject<VueMessageType>;
+} = {
+	[AvailableLanguages['de-DE']]: {
+		parent: 'Eltern',
+	},
+	[AvailableLanguages['en-GB']]: {
+		parent: 'Parent',
+	},
+};
+
+const MESSAGE_NAMESPACE = 'directus_extension_wpslug_interface';
 
 export default defineInterface({
 	id: 'extension-wpslug',
@@ -13,6 +31,13 @@ export default defineInterface({
 	options: ({ collection }) => {
 		const store = useStores();
 		const fieldsStore = store.useFieldsStore();
+		const i18n = useI18n();
+
+		Object.values(AvailableLanguages).forEach(async (lang) => {
+			i18n.mergeLocaleMessage(lang, {
+				[MESSAGE_NAMESPACE]: MESSAGES[lang],
+			});
+		});
 
 		const fields: { text: string; value: string | null; relations: any }[] = fieldsStore
 			.getFieldsForCollection(collection)
@@ -50,7 +75,7 @@ export default defineInterface({
 			{
 				field: 'parent',
 				type: 'string',
-				name: '$t:parent',
+				name: `$t:${MESSAGE_NAMESPACE}.parent`,
 				meta: {
 					width: 'full',
 					interface: 'select-dropdown',
