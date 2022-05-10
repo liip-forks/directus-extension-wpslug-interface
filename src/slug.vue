@@ -55,6 +55,8 @@ import slugify from '@sindresorhus/slugify';
 import { useI18n } from 'vue-i18n';
 import { useApi } from '@directus/extensions-sdk';
 
+const MAX_RENDERED_PARENT_SLUGS_LENGTH = 15;
+
 export default defineComponent({
 	props: {
 		primaryKey: {
@@ -134,11 +136,9 @@ export default defineComponent({
 			parentSlugs.value.length > 0 ? `${parentSlugs.value.join('/')}/` : ''
 		);
 		const renderedParentSlugsShort = computed<string>(() =>
-			parentSlugs.value.length > 0
-				? parentSlugs.value.length > 2
-					? `.../${parentSlugs.value.slice(-2).join('/')}/`
-					: `${parentSlugs.value.join('/')}/`
-				: ''
+			renderedParentSlugs.value.length > MAX_RENDERED_PARENT_SLUGS_LENGTH
+				? `...${renderedParentSlugs.value.slice(-MAX_RENDERED_PARENT_SLUGS_LENGTH)}`
+				: renderedParentSlugs.value
 		);
 		const presentedLink = computed<string>(
 			() =>
