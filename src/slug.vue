@@ -210,13 +210,23 @@ export default defineComponent({
 			}
 			const response = await api.get(`/items/${props.collection}/${encodeURIComponent(id)}`, {
 				params: {
-					fields: [props.field, props.parent],
+					fields: [
+						props.field,
+						`${props.parent}.${props.field}`,
+						`${props.parent}.${props.parent}.${props.field}`,
+						`${props.parent}.${props.parent}.${props.parent}.${props.field}`,
+						`${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.field}`,
+						`${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.field}`,
+						`${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.parent}.${props.field}`,
+					],
 				},
 			});
-			if (response.data?.data && response.data?.data[props.parent]) {
-				return await getParentSlugs(response.data.data[props.parent], [response.data.data[props.field], ...parents]);
-			}
-			return [response.data.data[props.field], ...parents];
+			return response.data?.data && extractParentSlugs(response.data?.data);
+		}
+
+		function extractParentSlugs(parent: any, parentSlugs: string[] = []): string[] {
+			const mergedSlugs = [parent[props.field], ...parentSlugs];
+			return parent[props.parent] ? extractParentSlugs(parent[props.parent], mergedSlugs) : mergedSlugs;
 		}
 
 		function onKeyPress(event: KeyboardEvent) {
