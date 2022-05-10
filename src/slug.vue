@@ -124,7 +124,6 @@ export default defineComponent({
 		const savedParentId = computed<number>(() => values.value.parent);
 		const parentSlugs = ref<string[]>([]);
 		const parentsLoading = ref(false);
-		const slugs = ref([]);
 		const isEditing = ref<boolean>(props.autofocus);
 		const isManuallyEdited = ref<boolean>(false);
 		const cachedValueBeforeEdit = ref<string>(props.value);
@@ -189,7 +188,6 @@ export default defineComponent({
 			parentSlugs,
 			renderedSuffix,
 			renderedPrefix,
-			slugs,
 			presentedLink,
 			isManuallyEdited,
 			isEditing,
