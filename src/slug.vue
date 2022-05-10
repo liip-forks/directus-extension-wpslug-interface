@@ -14,7 +14,7 @@
 		<template v-if="iconLeft || renderedPrefix || parentSlugs.length" #prepend>
 			<v-icon v-if="iconLeft" :name="iconLeft" />
 			<span class="prefixsuffix">
-				{{ `${renderedPrefix}${parentSlugs.length > 0 ? `${parentSlugs.join('/')}/` : ''}` }}
+				{{ `${renderedPrefix}${renderedParentSlugsShort}` }}
 			</span>
 		</template>
 		<template v-if="renderedSuffix" #append>
@@ -42,7 +42,7 @@
 				class="action-button"
 				@click="onResetToTemplateClick"
 			>
-				<v-icon name="auto_fix_high"/>
+				<v-icon name="auto_fix_high" />
 			</v-button>
 		</template>
 	</div>
@@ -118,7 +118,7 @@ export default defineComponent({
 	},
 	emits: ['input'],
 	setup(props, { emit, attrs }) {
-	  const api = useApi();
+		const api = useApi();
 		const { t } = useI18n();
 		const values = inject('values', ref<Record<string, any>>({}));
 		const savedParentId = computed<number>(() => values.value.parent);
@@ -130,11 +130,21 @@ export default defineComponent({
 		const trim = ref<boolean>(true);
 		const renderedPrefix = computed<string>(() => render(props.prefix || '', values.value));
 		const renderedSuffix = computed<string>(() => render(props.suffix || '', values.value));
-	  const presentedLink = computed<string>(
+		const renderedParentSlugs = computed<string>(() =>
+			parentSlugs.value.length > 0 ? `${parentSlugs.value.join('/')}/` : ''
+		);
+		const renderedParentSlugsShort = computed<string>(() =>
+			parentSlugs.value.length > 0
+				? parentSlugs.value.length > 2
+					? `.../${parentSlugs.value.slice(-2).join('/')}/`
+					: `${parentSlugs.value.join('/')}/`
+				: ''
+		);
+		const presentedLink = computed<string>(
 			() =>
-				`${renderedPrefix.value}${parentSlugs.value.length > 0 ? `${parentSlugs.value.join('/')}/` : ''}${
-					props.value || props.placeholder || attrs['field-data']?.meta.field
-				}${renderedSuffix.value}`
+				`${renderedPrefix.value}${renderedParentSlugs.value}${props.value || props.placeholder || ''}${
+					renderedSuffix.value
+				}`
 		);
 		const isDiffer = computed<boolean>(() => {
 			const transformed = transform(render(props.template, values.value));
@@ -188,6 +198,7 @@ export default defineComponent({
 			parentSlugs,
 			renderedSuffix,
 			renderedPrefix,
+			renderedParentSlugsShort,
 			presentedLink,
 			isManuallyEdited,
 			isEditing,
