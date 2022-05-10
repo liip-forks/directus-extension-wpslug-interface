@@ -126,7 +126,7 @@ export default defineComponent({
 		const parentsLoading = ref(false);
 		const slugs = ref([]);
 		const isEditing = ref<boolean>(props.autofocus);
-	  const isManuallyEdited = ref<boolean>(false);
+		const isManuallyEdited = ref<boolean>(false);
 		const cachedValueBeforeEdit = ref<string>(props.value);
 		const trim = ref<boolean>(true);
 		const renderedPrefix = computed<string>(() => render(props.prefix || '', values.value));
@@ -195,7 +195,6 @@ export default defineComponent({
 			isEditing,
 			trim,
 			isDiffer,
-			setByCurrentState,
 			onResetToTemplateClick,
 			onChange,
 			onKeyPress,
@@ -226,7 +225,7 @@ export default defineComponent({
 			if (event.key === 'Escape') {
 				// Temporary disable triming to avoid overwriting of the model value by the blur event inside v-input.
 				trim.value = false;
-		  	isManuallyEdited.value = false;
+				isManuallyEdited.value = false;
 				emit('input', cachedValueBeforeEdit.value);
 				nextTick(() => {
 					disableEdit();
