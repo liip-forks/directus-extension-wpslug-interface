@@ -11,7 +11,7 @@
 		@blur="disableEdit"
 		@keydown="onKeyPress"
 	>
-		<template v-if="iconLeft || renderedPrefix || parentSlugs.length" #prepend>
+		<template v-if="iconLeft || renderedPrefix || renderedParentSlugsShort" #prepend>
 			<v-icon v-if="iconLeft" :name="iconLeft" />
 			<span class="prefixsuffix">
 				{{ `${renderedPrefix}${renderedParentSlugsShort}` }}
