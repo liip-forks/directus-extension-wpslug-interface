@@ -142,9 +142,9 @@ export default defineComponent({
 		);
 		const presentedLink = computed<string>(
 			() =>
-				`${renderedPrefix.value}${renderedParentSlugs.value}${props.value || props.placeholder || ''}${
-					renderedSuffix.value
-				}`
+				`${renderedPrefix.value}${renderedParentSlugs.value}${
+					props.value || props.placeholder || attrs['field-data']?.meta.field
+				}${renderedSuffix.value}`
 		);
 		const isDiffer = computed<boolean>(() => {
 			const transformed = transform(render(props.template, values.value));
@@ -219,6 +219,7 @@ export default defineComponent({
 			if (!id) {
 				return parents;
 			}
+			// This query only allows nested children to a maximum level of 7.
 			const response = await api.get(`/items/${props.collection}/${encodeURIComponent(id)}`, {
 				params: {
 					fields: [
