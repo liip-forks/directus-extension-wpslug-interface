@@ -127,7 +127,7 @@ export default defineComponent({
 		const parentSlugs = ref<string[]>([]);
 		const parentsLoading = ref(false);
 		const isEditing = ref<boolean>(props.autofocus);
-		const isManuallyEdited = ref<boolean>(false);
+		const isTouched = ref<boolean>(false);
 		const cachedValueBeforeEdit = ref<string>(props.value);
 		const trim = ref<boolean>(true);
 		const renderedPrefix = computed<string>(() => render(props.prefix || '', values.value));
@@ -180,7 +180,7 @@ export default defineComponent({
 			}
 
 			// Reject when manually edited.
-			if (isEditing.value || isManuallyEdited.value) return;
+			if (isEditing.value || isTouched.value) return;
 
 			// According to the update policy.
 			if (!(props.primaryKey !== '+' ? props.update.includes('update') : props.update.includes('create'))) return;
@@ -200,7 +200,7 @@ export default defineComponent({
 			renderedPrefix,
 			renderedParentSlugsShort,
 			presentedLink,
-			isManuallyEdited,
+			isTouched,
 			isEditing,
 			trim,
 			isDiffer,
@@ -244,7 +244,7 @@ export default defineComponent({
 			if (event.key === 'Escape') {
 				// Temporary disable triming to avoid overwriting of the model value by the blur event inside v-input.
 				trim.value = false;
-				isManuallyEdited.value = false;
+				isTouched.value = false;
 				emit('input', cachedValueBeforeEdit.value);
 				nextTick(() => {
 					disableEdit();
@@ -259,7 +259,7 @@ export default defineComponent({
 			if (props.disabled) return;
 			if (props.value === value) return;
 
-			isManuallyEdited.value = Boolean(value && value.trim());
+			isTouched.value = Boolean(value && value.trim());
 
 			// Emit exact value.
 			emit('input', transform(value || ''));
@@ -270,7 +270,7 @@ export default defineComponent({
 		}
 
 		function onResetToTemplateClick() {
-			isManuallyEdited.value = false;
+			isTouched.value = false;
 			resetToTemplate(values.value);
 		}
 
