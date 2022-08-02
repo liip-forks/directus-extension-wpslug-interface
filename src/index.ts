@@ -5,6 +5,7 @@ import { useI18n, LocaleMessageObject, VueMessageType } from 'vue-i18n';
 
 enum AvailableLanguages {
 	'en-GB' = 'en-GB',
+	'en-US' = 'en-US',
 	'de-DE' = 'de-DE',
 }
 const MESSAGES: {
@@ -14,6 +15,9 @@ const MESSAGES: {
 		parent: 'Eltern',
 	},
 	[AvailableLanguages['en-GB']]: {
+		parent: 'Parent',
+	},
+	[AvailableLanguages['en-US']]: {
 		parent: 'Parent',
 	},
 };
